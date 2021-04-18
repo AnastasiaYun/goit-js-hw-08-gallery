@@ -64,35 +64,64 @@ const images = [
   },
 ];
 
-const imagesBoxContainer = document.querySelector('.js-gallery');
-const cardMarkup = createImagesCardMarkup(images);
 
-imagesBoxContainer.insertAdjacentHTML('beforeend', cardMarkup);
-imagesBoxContainer.addEventListener('click', onImagesContainerClick)
 
-function createImagesCardMarkup(images) {
-  return images.map(({preview,original,description}) => {
-    return `
-      <li class="gallery__item">
-      <a
-        class="gallery__link"
-        href="${preview}"
-      >
-        <img
-          class="gallery__image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-    </li>
-    `;
-  })
-  .join('');
+const galleryList = document.querySelector('.gallery');
+const openModal = document.querySelector('.js-lightbox');
+const openImageInModal = document.querySelector('.lightbox__image');
+const buttonCloseModal = document.querySelector('.lightbox__button');
+
+const imagesMarkup = createCardsMarcup(images);
+
+galleryList.insertAdjacentHTML('beforeend', imagesMarkup);
+galleryList.addEventListener('click', onGalleryListClick);
+buttonCloseModal.addEventListener('click', buttonCloseModalClick);
+
+function createCardsMarcup(images) {
+  return images.map(({preview, original, description}) => {
+      return `
+<li class="gallery__item">
+   <a
+     class="gallery__link"
+     href="${original}"
+   >
+     <img
+       class="gallery__image"
+       src="${preview}"
+       data-source="${original}"
+       alt="${description}"
+     />
+   </a>
+ </li>
+      `
+  }).join('');
+};
+
+
+function onGalleryListClick(e) { 
+  e.preventDefault();
+  if (e.target.classList.contains('js-gallery')) {
+    return;
+  }
+  onOpenModalClick();
+  updateModalImg(e.target.dataset.source, e.target.alt)
+};
+
+function onOpenModalClick() {
+  openModal.classList.add('is-open');
+};
+function updateModalImg(src,alt  ) {
+    openImageInModal.src = src;
+    openImageInModal.alt = alt;
+
+}
+ 
+function buttonCloseModalClick() {
+  openModal.classList.remove('is-open');
+  updateModalImg('','')
 }
 
-function onImagesContainerClick (evt) {
-console.log(evt.target);
-}
+
+
 
 
